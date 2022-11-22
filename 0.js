@@ -8,18 +8,6 @@ const port = 3000
 
 app.use(bodyParser.json())
 
-let tempStorage = []
-
-app.get('/notes', async (req,res) => {
-  let db = await connect()
-  let cursor = await db.collection("coll").find()
-  let results = await cursor.toArray()
-
-
-  res.json(tempStorage)
-
-})
-
 app.get('/vratiKorisnike', (req,res) => {
   
   
@@ -28,9 +16,11 @@ app.get('/vratiKorisnike', (req,res) => {
 
 })
 
-app.post('/dodajKorisnika', (req,res) => {
+app.post('/saveItem', (req,res) => {
   let data = req.body
-  data["id"] = uuidv4()
+  let db = await connect()
+  let cursor = await db.collection("coll").find()
+  let results = await cursor.insertMany(data)
 
   tempStorage.push(data)
   res.json(data)
